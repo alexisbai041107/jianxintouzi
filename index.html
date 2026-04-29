@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>建信（北京）投资基金管理有限责任公司投资图谱</title>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: "Microsoft Yahei", sans-serif;
+        }
+        #graph-container {
+            width: 100%;
+            height: 800px;
+            border: 1px solid #eee;
+        }
+        .detail-panel {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            display: none;
+        }
+        .detail-panel h3 {
+            margin-top: 0;
+            color: #333;
+        }
+        .detail-panel table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0;
+        }
+        .detail-panel table th, .detail-panel table td {
+            border: 1px solid #ccc;
+            padding: 8px 12px;
+            text-align: left;
+        }
+        .detail-panel table th {
+            background-color: #f5f5f5;
+        }
+    </style>
+</head>
+<body>
+    <div id="graph-container"></div>
+    <div class="detail-panel" id="detailPanel">
+        <h3 id="detailTitle"></h3>
+        <div id="detailContent"></div>
+    </div>
+
+    <script>
+        const myChart = echarts.init(document.getElementById('graph-container'));
+
+        const data = {
+            nodes: [
+                // 核心：私募基金管理人（更大的红色球）
+                {
+                    id: 'core',
+                    name: '私募基金管理人',
+                    category: 0,
+                    symbolSize: 70,
+                    detail: `
+                        <table>
+                            <tr><th>主体名称</th><td>建信（北京）投资基金管理有限责任公司</td></tr>
+                            <tr><th>管理规模</th><td>100亿以上（具体未知）</td></tr>
+                        </table>
+                    `
+                },
+                // 基金1
+                {
+                    id: 'fund1',
+                    name: '陕西建兴湛卢股权投资\n(有限合伙)',
+                    category: 1,
+                    detail: `
+                        <table>
+                            <tr><th>成立日期</th><td>2026-02-11</td></tr>
+                            <tr><th>注册资本</th><td>30000.0000万人民币</td></tr>
+                            <tr><th>管理人出资比例</th><td>1.00%</td></tr>
+                            <tr><th>经营状态</th><td>存续</td></tr>
+                        </table>
+                        <br><p><strong>出资方（LP）</strong></p>
+                        <table>
+                            <tr><th>出资方名称</th><th>持股比例</th><th>出资额(万)</th></tr>
+                            <tr><td>中兴通讯股份有限公司</td><td>39.00%</td><td>11700</td></tr>
+                            <tr><td>陕西省科技创新母基金</td><td>20.00%</td><td>6000</td></tr>
+                            <tr><td>陕西源杰半导体</td><td>10.00%</td><td>3000</td></tr>
+                            <tr><td>矽力杰半导体技术</td><td>10.00%</td><td>3000</td></tr>
+                            <tr><td>无锡高新区创投</td><td>10.00%</td><td>3000</td></tr>
+                            <tr><td>深圳垣华投资</td><td>10.00%</td><td>3000</td></tr>
+                            <tr><td>建信(北京)投资基金</td><td>1.00%</td><td>300</td></tr>
+                        </table>
+                    `
+                },
+                // 基金2
+                {
+                    id: 'fund2',
+                    name: '徐州建兴高新创投基金\n(有限合伙)',
+                    category: 1,
+                    detail: `
+                        <table>
+                            <tr><th>成立日期</th><td>2025-09-17</td></tr>
+                            <tr><th>注册资本</th><td>100000.0000万人民币</td></tr>
+                            <tr><th>管理人出资比例</th><td>1.00%</td></tr>
+                            <tr><th>经营状态</th><td>存续</td></tr>
+                        </table>
+                    `
+                },
+                // 基金3
+                {
+                    id: 'fund3',
+                    name: '厦门嘉庚建新创投基金\n(有限合伙)',
+                    category: 1,
+                    detail: `
+                        <table>
+                            <tr><th>成立日期</th><td>2024-12-31</td></tr>
+                            <tr><th>注册资本</th><td>10100.0000万人民币</td></tr>
+                            <tr><th>管理人出资比例</th><td>0.99%</td></tr>
+                            <tr><th>经营状态</th><td>存续</td></tr>
+                        </table>
+                    `
+                },
+                // 基金4
+                {
+                    id: 'fund4',
+                    name: '建新星元绿色创投基金\n(常州)',
+                    category: 1,
+                    detail: `
+                        <table>
+                            <tr><th>成立日期</th><td>2024-12-03</td></tr>
+                            <tr><th>注册资本</th><td>160000.0000万人民币</td></tr>
+                            <tr><th>管理人出资比例</th><td>0.50%</td></tr>
+                            <tr><th>经营状态</th><td>存续</td></tr>
+                        </table>
+                    `
+                },
+                // 基金5
+                {
+                    id: 'fund5',
+                    name: '山西低空经济股权基金\n(有限合伙)',
+                    category: 1,
+                    detail: `
+                        <table>
+                            <tr><th>成立日期</th><td>2024-09-02</td></tr>
+                            <tr><th>注册资本</th><td>150200.0000万人民币</td></tr>
+                            <tr><th>管理人出资比例</th><td>0.07%</td></tr>
+                            <tr><th>经营状态</th><td>存续</td></tr>
+                        </table>
+                    `
+                },
+                // 基金6
+                {
+                    id: 'fund6',
+                    name: '丽水建鑫信瑞创投基金\n(有限合伙)',
+                    category: 1,
+                    detail: `
+                        <table>
+                            <tr><th>成立日期</th><td>2024-09-02</td></tr>
+                            <tr><th>注册资本</th><td>200000.0000万人民币</td></tr>
+                            <tr><th>管理人出资比例</th><td>1.00%</td></tr>
+                            <tr><th>经营状态</th><td>存续</td></tr>
+                        </table>
+                    `
+                },
+                // 基金7
+                {
+                    id: 'fund7',
+                    name: '成都交子建鑫智造股权基金',
+                    category: 1,
+                    detail: `
+                        <table>
+                            <tr><th>成立日期</th><td>2024-03-29</td></tr>
+                            <tr><th>注册资本</th><td>30000.0000万人民币</td></tr>
+                            <tr><th>管理人出资比例</th><td>0.33%</td></tr>
+                            <tr><th>经营状态</th><td>存续</td></tr>
+                        </table>
+                    `
+                },
+                // 基金8
+                {
+                    id: 'fund8',
+                    name: '天津联信不动产股权基金',
+                    category: 1,
+                    detail: `
+                        <table>
+                            <tr><th>成立日期</th><td>2024-02-28</td></tr>
+                            <tr><th>注册资本</th><td>60000.0000万人民币</td></tr>
+                            <tr><th>管理人出资比例</th><td>0.83%</td></tr>
+                            <tr><th>经营状态</th><td>注销</td></tr>
+                        </table>
+                    `
+                },
+
+                // 5个被投企业（绿色球）
+                {
+                    id: 'c1', name: '被投企业1', category: 2,
+                    detail: `<table><tr><th>所属行业</th><td>新一代信息技术</td></tr><tr><th>公司规模</th><td>中型企业</td></tr><tr><th>融资阶段</th><td>成长期</td></tr></table>`
+                },
+                {
+                    id: 'c2', name: '被投企业2', category: 2,
+                    detail: `<table><tr><th>所属行业</th><td>人工智能</td></tr><tr><th>公司规模</th><td>中小型企业</td></tr><tr><th>融资阶段</th><td>扩张期</td></tr></table>`
+                },
+                {
+                    id: 'c3', name: '被投企业3', category: 2,
+                    detail: `<table><tr><th>所属行业</th><td>新能源</td></tr><tr><th>公司规模</th><td>大型企业</td></tr><tr><th>融资阶段</th><td>成熟期</td></tr></table>`
+                },
+                {
+                    id: 'c4', name: '被投企业4', category: 2,
+                    detail: `<table><tr><th>所属行业</th><td>先进制造</td></tr><tr><th>公司规模</th><td>中型企业</td></tr><tr><th>融资阶段</th><td>成长期</td></tr></table>`
+                },
+                {
+                    id: 'c5', name: '被投企业5', category: 2,
+                    detail: `<table><tr><th>所属行业</th><td>半导体/芯片</td></tr><tr><th>公司规模</th><td>中小型企业</td></tr><tr><th>融资阶段</th><td>初创期</td></tr></table>`
+                }
+            ],
+            links: [
+                { source: 'core', target: 'fund1' },
+                { source: 'core', target: 'fund2' },
+                { source: 'core', target: 'fund3' },
+                { source: 'core', target: 'fund4' },
+                { source: 'core', target: 'fund5' },
+                { source: 'core', target: 'fund6' },
+                { source: 'core', target: 'fund7' },
+                { source: 'core', target: 'fund8' },
+
+                // 基金1 → 5家被投企业
+                { source: 'fund1', target: 'c1' },
+                { source: 'fund1', target: 'c2' },
+                { source: 'fund1', target: 'c3' },
+                { source: 'fund1', target: 'c4' },
+                { source: 'fund1', target: 'c5' }
+            ]
+        };
+
+        const option = {
+            tooltip: { trigger: 'item', formatter: '{b}' },
+            legend: {
+                orient: 'vertical', left: '20px', top: 'center',
+                data: ['私募基金管理人', '在管基金', '被投企业']
+            },
+            series: [{
+                type: 'graph',
+                layout: 'force',
+                roam: true,
+                label: { show: true, position: 'inside', fontSize: 11 },
+                force: { repulsion: 2500, edgeLength: 160, gravity: 0.1 },
+                categories: [
+                    { name: '私募基金管理人', itemStyle: { color: '#e54d42' } },
+                    { name: '在管基金', itemStyle: { color: '#4285F4' } },
+                    { name: '被投企业', itemStyle: { color: '#0F9D58' } }
+                ],
+                data: data.nodes,
+                links: data.links
+            }]
+        };
+
+        myChart.setOption(option);
+
+        myChart.on('click', function (params) {
+            if (params.dataType === 'node') {
+                const panel = document.getElementById('detailPanel');
+                document.getElementById('detailTitle').innerText = params.name;
+                document.getElementById('detailContent').innerHTML = params.data.detail;
+                panel.style.display = 'block';
+            }
+        });
+
+        window.addEventListener('resize', () => myChart.resize());
+    </script>
+</body>
+</html>
