@@ -7,39 +7,38 @@
     <style>
         body {
             margin: 0;
-            padding: 20px;
+            padding: 0;
             font-family: "Microsoft Yahei", sans-serif;
-            background: #f9f9f9;
+            background: #121212;
+            color: #ffffff;
         }
-        /* 醒目标题样式 */
-        .chart-title {
+        .page-title {
             text-align: center;
-            font-size: 24px;
+            font-size: 28px;
             font-weight: bold;
-            color: #333;
-            margin-bottom: 20px;
+            margin: 15px auto;
+            color: #4285F4;
+            display: block;
         }
         #graph-container {
             width: 100%;
-            height: 750px;
-            border: 1px solid #eee;
-            background: white;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            height: 800px;
+            border: 1px solid #333;
+            background: #1e1e1e;
         }
         .detail-panel {
             margin-top: 20px;
             padding: 18px;
-            border: 1px solid #ccc;
+            border: 1px solid #444;
             border-radius: 8px;
-            background: white;
+            background: #2d2d2d;
+            color: #ffffff;
             display: none;
         }
         .detail-panel h3 {
             margin-top: 0;
-            color: #e54d42;
-            font-size: 18px;
-            border-bottom: 2px solid #f5f5f5;
-            padding-bottom: 10px;
+            color: #ffffff;
+            font-size: 16px;
         }
         .detail-panel table {
             width: 100%;
@@ -47,20 +46,19 @@
             margin: 10px 0;
         }
         .detail-panel table th, .detail-panel table td {
-            border: 1px solid #eee;
-            padding: 10px;
+            border: 1px solid #444;
+            padding: 8px 12px;
             text-align: left;
-            font-size: 13px;
+            font-size: 14px;
+            color: #ffffff;
         }
         .detail-panel table th {
-            background-color: #fafafa;
-            width: 30%;
-            color: #666;
+            background-color: #3a3a3a;
         }
     </style>
 </head>
 <body>
-    <div class="chart-title">建信（北京）投资基金管理有限责任公司投资图谱</div>
+    <div class="page-title">建信（北京）投资基金管理有限责任公司投资图谱</div>
     <div id="graph-container"></div>
     <div class="detail-panel" id="detailPanel">
         <h3 id="detailTitle"></h3>
@@ -70,129 +68,113 @@
     <script>
         const myChart = echarts.init(document.getElementById('graph-container'));
 
-        const CORE_SIZE = 75;
-        const FUND_SIZE = 45;
-        const COMPANY_SIZE = 35;
+        // 节点大小标准
+        const CORE_SIZE = 70;       // 红球大小
+        const FUND_SIZE = 42;       // 蓝球 = 70 * 3/5
+        const COMPANY_SIZE = 35;    // 绿球 = 70 * 1/2
+
+        // 基金数据（根据PDF中的详细出资信息更新）
+        const fundDetails = [
+            {
+                id: 'fund1',
+                name: '陕西建兴湛卢股权投资\n(有限合伙)',
+                category: 1,
+                symbolSize: FUND_SIZE,
+                tooltipDetail: `成立日期：\n2026/2/11\n\n注册资本：\n30000.00万人民币\n\n出资方及出资情况：\n• 中兴通讯股份有限公司：出资1.17亿元（39%）\n• 陕西省科技创新母基金：出资6000万元（20%）\n• 陕西源杰半导体：出资3000万元（10%）\n• 矽力杰半导体技术：出资3000万元（10%）\n• 无锡高新区创投：出资3000万元（10%）\n• 深圳垣华投资：出资3000万元（10%）\n• 建信(北京)投资基金：出资300万元（1%）\n\n经营状态：\n存续\n\n投资领域：\n新一代信息技术产业、新能源、人工智能、先进制造领域`
+            },
+            {
+                id: 'fund2',
+                name: '徐州建兴高新新兴产业创业投资基金\n(有限合伙)',
+                category: 1,
+                symbolSize: FUND_SIZE,
+                tooltipDetail: `成立日期：\n2025/9/17\n\n注册资本：\n100000.00万人民币\n\n出资方及出资情况：\n• 建信(北京)投资基金管理有限责任公司（GP）\n• 建信(北京)投资基金管理有限责任公司(委派代表 陈迪)\n\n经营状态：\n存续\n\n投资领域：\n高新新兴产业`
+            },
+            {
+                id: 'fund3',
+                name: '厦门嘉庚建新创业投资基金\n(有限合伙)',
+                category: 1,
+                symbolSize: FUND_SIZE,
+                tooltipDetail: `成立日期：\n2024/12/31\n\n注册资本：\n10100.00万人民币\n\n出资方及出资情况：\n• 具体出资方信息暂未公开\n\n经营状态：\n存续\n\n投资领域：\n创业投资`
+            },
+            {
+                id: 'fund4',
+                name: '建新星元绿色创业投资基金\n(常州)合伙企业(有限合伙)',
+                category: 1,
+                symbolSize: FUND_SIZE,
+                tooltipDetail: `成立日期：\n2024/12/3\n\n注册资本：\n160000.00万人民币\n\n出资方及出资情况：\n• 建信(北京)投资基金管理有限责任公司（主要出资方）\n\n经营状态：\n存续\n\n投资领域：\n绿色创业投资`
+            },
+            {
+                id: 'fund5',
+                name: '山西低空经济和通用航空业股权投资\n(有限合伙)',
+                category: 1,
+                symbolSize: FUND_SIZE,
+                tooltipDetail: `成立日期：\n2024/9/2\n\n注册资本：\n150200.00万人民币\n\n出资方及出资情况：\n• 中合盛资本管理有限公司\n• 建信(北京)投资基金管理有限责任公司\n\n经营状态：\n存续\n\n投资领域：\n低空经济和通用航空业`
+            },
+            {
+                id: 'fund6',
+                name: '丽水建鑫信瑞创业投资基金\n(有限合伙)',
+                category: 1,
+                symbolSize: FUND_SIZE,
+                tooltipDetail: `成立日期：\n2024/9/2\n\n注册资本：\n200000.00万人民币\n\n出资方及出资情况：\n• 建信(北京)投资基金管理有限责任公司（主要出资方）\n\n经营状态：\n存续\n\n投资领域：\n浙江省"415X"先进制造业专项基金，截至2025年1月，已有首批重大储备项目20个`
+            },
+            {
+                id: 'fund7',
+                name: '成都东部新区交子建鑫智能智造\n股权投资基金(有限合伙)',
+                category: 1,
+                symbolSize: FUND_SIZE,
+                tooltipDetail: `成立日期：\n2024/3/29\n\n注册资本：\n30000.00万人民币\n\n出资方及出资情况：\n• 建信(北京)投资基金管理有限责任公司（主要出资方）\n\n经营状态：\n存续\n\n投资领域：\n高端装备制造、电子信息、智能网联汽车等产业领域，总规模10亿元，首期规模3亿元`
+            },
+            {
+                id: 'fund8',
+                name: '天津联信私募不动产股权\n投资基金(有限合伙)',
+                category: 1,
+                symbolSize: FUND_SIZE,
+                tooltipDetail: `成立日期：\n2024/2/28\n\n注册资本：\n60000.00万人民币\n\n出资方及出资情况：\n• 建信(北京)投资基金管理有限责任公司（主要出资方）\n\n经营状态：\n注销\n\n投资领域：\n不动产股权投资`
+            }
+        ];
+
+        // 根据PDF文档，丽水建鑫有20个储备项目，创建两个代表性节点
+        const companyDetails = [
+            {
+                id: 'c1', 
+                name: '丽水建鑫储备项目A', 
+                category: 2, 
+                symbolSize: COMPANY_SIZE,
+                tooltipDetail: `所属领域：\n浙江省"415X"先进制造业\n\n项目状态：\n重大储备项目\n\n投资阶段：\n储备阶段\n\n备注：\n作为丽水建鑫信瑞创业投资基金20个重大储备项目之一`
+            },
+            {
+                id: 'c2', 
+                name: '丽水建鑫储备项目B', 
+                category: 2, 
+                symbolSize: COMPANY_SIZE,
+                tooltipDetail: `所属领域：\n浙江省"415X"先进制造业\n\n项目状态：\n重大储备项目\n\n投资阶段：\n储备阶段\n\n备注：\n作为丽水建鑫信瑞创业投资基金20个重大储备项目之一`
+            }
+        ];
 
         const data = {
             nodes: [
+                // 核心节点：图例=私募基金管理人，节点显示全称
                 {
                     id: 'core',
-                    name: '建信（北京）投资基金\n管理有限责任公司',
+                    name: '建信（北京）投资基金管理有限责任公司',
                     category: 0,
                     symbolSize: CORE_SIZE,
-                    detail: `<table><tr><th>主体类型</th><td>私募基金管理人</td></tr><tr><th>管理规模</th><td>100亿以上</td></tr></table>`
-                },
-                // 二级节点 - 根据PDF补充信息[cite: 2]
-                {
-                    id: 'fund1',
-                    name: '陕西建兴湛卢股权投资\n(有限合伙)',
-                    category: 1,
-                    symbolSize: FUND_SIZE,
                     detail: `
                         <table>
-                            <tr><th>成立时间</th><td>2026-02-11</td></tr>
-                            <tr><th>目标规模</th><td>3亿人民币</td></tr>
-                            <tr><th>备案编号</th><td>SBSE62</td></tr>
+                            <tr><th>主体类型</th><td>私募基金管理人</td></tr>
+                            <tr><th>管理规模</th><td>100亿以上（具体未知）</td></tr>
                         </table>
-                        <p><strong>出资方（LP）明细</strong></p>
-                        <table>
-                            <tr><th>LP名称</th><th>承诺出资</th></tr>
-                            <tr><td>中兴通讯股份有限公司</td><td>1.17亿</td></tr>
-                            <tr><td>陕西省科技创新母基金</td><td>6000万</td></tr>
-                            <tr><td>陕西源杰半导体</td><td>3000万</td></tr>
-                            <tr><td>建信(北京)投资基金</td><td>300万</td></tr>
-                        </table>`
+                    `,
+                    tooltipDetail: `主体类型：\n私募基金管理人\n\n管理规模：\n100亿以上（具体未知）`
                 },
-                {
-                    id: 'fund2',
-                    name: '厦门嘉庚建新创投\n(有限合伙)',
-                    category: 1,
-                    symbolSize: FUND_SIZE,
-                    detail: `
-                        <table>
-                            <tr><th>成立时间</th><td>2024-12-31</td></tr>
-                            <tr><th>目标规模</th><td>1.01亿人民币</td></tr>
-                            <tr><th>备案编号</th><td>SBHU45</td></tr>
-                        </table>
-                        <p><strong>出资方（LP）明细</strong></p>
-                        <table>
-                            <tr><th>LP名称</th><th>承诺出资</th></tr>
-                            <tr><td>嘉庚创新实验室</td><td>3000万</td></tr>
-                            <tr><td>芜湖建信鼎信投资</td><td>2900万</td></tr>
-                            <tr><td>湖里区产业投资集团</td><td>2000万</td></tr>
-                            <tr><td>建信(北京)投资基金</td><td>100万</td></tr>
-                        </table>`
-                },
-                {
-                    id: 'fund3',
-                    name: '成都交子建鑫智造\n股权基金',
-                    category: 1,
-                    symbolSize: FUND_SIZE,
-                    detail: `
-                        <table>
-                            <tr><th>成立时间</th><td>2024-03-29</td></tr>
-                            <tr><th>目标规模</th><td>3亿人民币</td></tr>
-                        </table>
-                        <p><strong>基金背景</strong></p>
-                        <p>主要投资落户成都东部新区的高端装备制造、电子信息等领域。</p>`
-                },
-                {
-                    id: 'fund4',
-                    name: '建新星元绿色创投\n(常州)',
-                    category: 1,
-                    symbolSize: FUND_SIZE,
-                    detail: `
-                        <table>
-                            <tr><th>成立时间</th><td>2024-12-03</td></tr>
-                            <tr><th>目标规模</th><td>16亿人民币</td></tr>
-                        </table>
-                        <p><strong>核心出资方</strong></p>
-                        <table>
-                            <tr><td>国家绿色发展基金股份有限公司</td><td>4亿</td></tr>
-                            <tr><td>江苏诚昱投资发展有限公司</td><td>3.92亿</td></tr>
-                        </table>`
-                },
-                {
-                    id: 'fund5',
-                    name: '丽水建鑫信瑞创投\n(有限合伙)',
-                    category: 1,
-                    symbolSize: FUND_SIZE,
-                    detail: `
-                        <table>
-                            <tr><th>成立时间</th><td>2024-09-02</td></tr>
-                            <tr><th>目标规模</th><td>20亿人民币</td></tr>
-                        </table>
-                        <p><strong>项目储备</strong></p>
-                        <p>浙江省“415X”先进制造业专项基金，已有首批重大储备项目20个。</p>`
-                },
-                // 三级节点 - 仅保留丽水建鑫对应的2家被投企业[cite: 2]
-                {
-                    id: 'c1',
-                    name: '深向 Deepway',
-                    category: 2,
-                    symbolSize: COMPANY_SIZE,
-                    detail: `
-                        <table>
-                            <tr><th>投资时间</th><td>2025/11/5</td></tr>
-                            <tr><th>投资金额</th><td>5000万人民币</td></tr>
-                            <tr><th>所属行业</th><td>汽车交通（智能新能源卡车）</td></tr>
-                            <tr><th>地区</th><td>安徽省合肥市</td></tr>
-                        </table>`
-                },
-                {
-                    id: 'c2',
-                    name: '同创普润',
-                    category: 2,
-                    symbolSize: COMPANY_SIZE,
-                    detail: `
-                        <table>
-                            <tr><th>投资时间</th><td>2025/10/15</td></tr>
-                            <tr><th>投资金额</th><td>7000万人民币</td></tr>
-                            <tr><th>所属行业</th><td>材料电子信息（靶材原材料）</td></tr>
-                            <tr><th>地区</th><td>上海市奉贤区</td></tr>
-                        </table>`
-                }
+                ...fundDetails.map(fund => ({
+                    ...fund,
+                    detail: `<div style="white-space: pre-line">成立日期：\n${fund.tooltipDetail.split('\n\n')[0].split('\n')[1]}\n\n注册资本：\n${fund.tooltipDetail.split('\n\n')[1].split('\n')[1]}\n\n出资方及出资情况：\n${fund.tooltipDetail.split('\n\n')[2].split('\n').slice(1).join('<br/>')}\n\n经营状态：\n${fund.tooltipDetail.split('\n\n')[3].split('\n')[1]}\n\n投资领域：\n${fund.tooltipDetail.split('\n\n')[4] ? fund.tooltipDetail.split('\n\n')[4].split('\n')[1] : '暂无'}</div>`
+                })),
+                ...companyDetails.map(company => ({
+                    ...company,
+                    detail: `<div style="white-space: pre-line">所属领域：\n${company.tooltipDetail.split('\n\n')[0].split('\n')[1]}\n\n项目状态：\n${company.tooltipDetail.split('\n\n')[1].split('\n')[1]}\n\n投资阶段：\n${company.tooltipDetail.split('\n\n')[2].split('\n')[1]}\n\n备注：\n${company.tooltipDetail.split('\n\n')[3].split('\n')[1]}</div>`
+                }))
             ],
             links: [
                 { source: 'core', target: 'fund1' },
@@ -200,54 +182,137 @@
                 { source: 'core', target: 'fund3' },
                 { source: 'core', target: 'fund4' },
                 { source: 'core', target: 'fund5' },
-                // 仅链接到三级真实被投企业
-                { source: 'fund5', target: 'c1' },
-                { source: 'fund5', target: 'c2' }
+                { source: 'core', target: 'fund6' },
+                { source: 'core', target: 'fund7' },
+                { source: 'core', target: 'fund8' },
+
+                // 连接丽水建鑫到其两个代表性储备项目
+                { source: 'fund6', target: 'c1' },
+                { source: 'fund6', target: 'c2' }
             ]
         };
 
         const option = {
-            tooltip: { trigger: 'item', formatter: '{b}' },
+            backgroundColor: '#121212',
+            tooltip: { 
+                trigger: 'item', 
+                formatter: function(params) {
+                    if (params.dataType === 'edge') {
+                        return `${params.data.source} → ${params.data.target}`;
+                    }
+                    // 在tooltip中也应用换行格式
+                    if (params.data && params.data.tooltipDetail) {
+                        return params.data.tooltipDetail.replace(/\n/g, '<br/>');
+                    }
+                    return params.name;
+                },
+                backgroundColor: '#1e1e1e',
+                textStyle: {
+                    color: '#42a5f5'
+                },
+                extraCssText: 'white-space: pre-line;'
+            },
             legend: {
-                orient: 'vertical', left: '20px', bottom: '20px',
-                data: ['私募基金管理人', '在管基金', '被投企业']
+                orient: 'vertical', 
+                left: '20px', 
+                top: 'center',
+                data: ['私募基金管理人', '在管基金', '被投企业'],
+                textStyle: {
+                    color: '#ffffff'
+                },
+                inactiveColor: '#666666'
             },
             series: [{
                 type: 'graph',
                 layout: 'force',
                 roam: true,
-                label: { show: true, position: 'inside', fontSize: 10, color: '#fff', formatter: '{b}' },
                 draggable: true,
-                // edgeLength 缩减为 130 (约为原先 180 的 5/7)[cite: 1, 2]
-                force: { repulsion: 2500, edgeLength: 130, gravity: 0.1 },
+                focusNodeAdjacency: true,
+                label: { 
+                    show: true, 
+                    position: 'inside', 
+                    fontSize: 11, 
+                    color: '#fff',
+                    formatter: function(params) {
+                        return params.data.name.split('\n').join(' ');
+                    }
+                },
+                force: { 
+                    repulsion: 3000, 
+                    edgeLength: 180 * (5/7),
+                    gravity: 0.1,
+                    layoutAnimation: true
+                },
                 categories: [
-                    { name: '私募基金管理人', itemStyle: { color: '#e54d42' } },
-                    { name: '在管基金', itemStyle: { color: '#4285F4' } },
-                    { name: '被投企业', itemStyle: { color: '#0F9D58' } }
+                    { 
+                        name: '私募基金管理人', 
+                        itemStyle: { color: '#e54d42' },
+                        emphasis: {
+                            itemStyle: { 
+                                color: '#ff6b6b',
+                                borderColor: '#ffffff',
+                                borderWidth: 2
+                            }
+                        }
+                    },
+                    { 
+                        name: '在管基金', 
+                        itemStyle: { color: '#4285F4' },
+                        emphasis: {
+                            itemStyle: { 
+                                color: '#6ab7ff',
+                                borderColor: '#ffffff',
+                                borderWidth: 2
+                            }
+                        }
+                    },
+                    { 
+                        name: '被投企业', 
+                        itemStyle: { color: '#0F9D58' },
+                        emphasis: {
+                            itemStyle: { 
+                                color: '#42db8c',
+                                borderColor: '#ffffff',
+                                borderWidth: 2
+                            }
+                        }
+                    }
                 ],
+                lineStyle: {
+                    color: 'source',
+                    curveness: 0.1,
+                    width: 2
+                },
+                edgeSymbol: ['none', 'arrow'],
+                edgeSymbolSize: [4, 10],
                 data: data.nodes,
                 links: data.links,
-                lineStyle: { color: '#bbb', width: 1.5, curveness: 0.1 }
+                emphasis: {
+                    focus: 'adjacency',
+                    lineStyle: {
+                        width: 4
+                    }
+                }
             }]
         };
 
         myChart.setOption(option);
 
+        // 点击查看详情
         myChart.on('click', function (params) {
             if (params.componentType === 'series' && params.dataType === 'node') {
                 const panel = document.getElementById('detailPanel');
                 const title = document.getElementById('detailTitle');
                 const content = document.getElementById('detailContent');
                 
-                title.innerText = params.data.name.replace('\n', '');
+                title.innerText = params.data.name;
                 content.innerHTML = params.data.detail;
                 panel.style.display = 'block';
-                // 自动滚动到详情区
-                panel.scrollIntoView({ behavior: 'smooth' });
             }
         });
 
         window.addEventListener('resize', () => myChart.resize());
     </script>
 </body>
-</html>
+
+
